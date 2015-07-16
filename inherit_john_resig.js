@@ -13,13 +13,14 @@
 (function(){
     var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
     this.Class = function(){};
-    Class.extend = function(prop) {
+    //Class.extend = function(prop) {
+    Class.extend = function extend(prop) {
         var _super = this.prototype;
         initializing = true;
         var prototype = new this();
         initializing = false;
         for (var name in prop) {
-            
+
             prototype[name] = typeof prop[name] == "function" &&
                 typeof _super[name] == "function" && fnTest.test(prop[name]) ?
                 (function(name, fn){
@@ -34,9 +35,10 @@
                 prop[name];
 
 /*
+// 如果 是函数 && 父级同名的也是函数 && 浏览器支持函数序列化
 if (typeof prop[name] == "function" 
         && typeof _super[name] == "function" 
-        && fnTest.test(prop[name])) {
+        && fnTest.test(prop[name]) ) {
 
     prototype[name] = (function(name, fn){
         return function() {
@@ -56,7 +58,10 @@ if (typeof prop[name] == "function"
         }
         Class.prototype = prototype;
         Class.constructor = Class;
-        Class.extend = arguments.callee;
+        // 这里可以避免使用 arguments.callee（严格模式不支持）
+        // 通过给匿名函数起个名字，在内部可以被访问到可实现
+        // Class.extend = arguments.callee;
+        Class.extend = extend;
         return Class;
     };
 })();
