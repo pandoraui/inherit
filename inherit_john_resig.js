@@ -19,6 +19,7 @@
         var prototype = new this();
         initializing = false;
         for (var name in prop) {
+            
             prototype[name] = typeof prop[name] == "function" &&
                 typeof _super[name] == "function" && fnTest.test(prop[name]) ?
                 (function(name, fn){
@@ -31,6 +32,23 @@
                     };
                 })(name, prop[name]) :
                 prop[name];
+
+/*
+if (typeof prop[name] == "function" 
+        && typeof _super[name] == "function" 
+        && fnTest.test(prop[name])) {
+
+    prototype[name] = (function(name, fn){
+        return function() {
+            // special handling for _super
+        };
+    })(name, prop[name]);
+
+} else {
+    // just copy the property
+    prototype[name] = prop[name];
+}
+*/
         }
         function Class() {
             if ( !initializing && this.init )
